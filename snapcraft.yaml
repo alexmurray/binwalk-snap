@@ -12,6 +12,11 @@ description: |
 license: MIT
 grade: stable
 confinement: strict
+architectures:
+  # we are limited by what sasquatch provides
+  - amd64
+  - arm64
+  - armhf
 
 apps:
   binwalk:
@@ -21,6 +26,14 @@ apps:
       - removable-media
 
 parts:
+  sasquatch:
+    plugin: nil
+    build-packages:
+      - wget
+    override-build: |
+      wget https://github.com/onekey-sec/sasquatch/releases/download/sasquatch-v4.5.1-5/sasquatch_1.0_${CRAFT_ARCH_BUILD_FOR}.deb
+      dpkg-deb -x sasquatch_1.0_${CRAFT_ARCH_BUILD_FOR}.deb $CRAFT_PART_INSTALL/
+
   python-deps:
     plugin: python
     source: https://github.com/ReFirmLabs/binwalk.git
@@ -57,7 +70,7 @@ parts:
       - HAVE_LZFSE=1
 
   binwalk:
-    after: [python-deps]
+    after: [sasquatch, python-deps, dmg2img, dumpifs]
     plugin: rust
     source: https://github.com/ReFirmLabs/binwalk.git
     source-tag: v$SNAPCRAFT_PROJECT_VERSION

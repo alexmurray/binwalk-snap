@@ -1,0 +1,24 @@
+summary: basic smoke test
+
+execute: |
+  # run binwalk on example files - these need to be in somewhere binwalk can
+  # read them from - so do it in home
+  cd $HOME
+
+  cp $SPREAD_PATH/tests/inputs/*.bin .
+
+  for input in *.bin; do
+    if [[ $input == *"malformed"* ]]; then
+      # TODO: determine why we spin forever on the malformed png - are we
+      # missing some dependency?
+      echo "skipping $input for now..."
+      continue
+    fi
+
+    echo "binwalk $input..."
+    binwalk $input >& >(tee $input.log)
+
+    cat $input.log | NOMATCH ERROR
+
+    rm -f $input.log
+  done

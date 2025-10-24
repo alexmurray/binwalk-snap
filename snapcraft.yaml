@@ -1,0 +1,100 @@
+name: binwalk
+title: binwalk
+contact:
+  - https://github.com/alexmurray/binwalk-snap/issues
+base: core24
+version: 3.1.0
+summary: Firmware Analysis Tool
+description: |
+  This is an updated version of the Binwalk firmware analysis tool, re-written
+  in Rust for speed and accuracy.
+
+license: MIT
+grade: stable
+confinement: strict
+
+apps:
+  binwalk:
+    command: bin/binwalk
+    plugs:
+      - home
+      - removable-media
+
+parts:
+  python-deps:
+    plugin: python
+    source: https://github.com/ReFirmLabs/binwalk.git
+    python-requirements:
+      - dependencies/requirements.txt
+
+  dumpifs:
+    plugin: make
+    source: https://github.com/askac/dumpifs.git
+    override-pull: |
+      craftctl default
+      # fix missing includes
+      for op in dec enc; do
+        echo '#include <string.h>' > fix${op}ifs.c.tmp
+        cat fix${op}ifs.c >> fix${op}ifs.c.tmp
+        mv fix${op}ifs.c.tmp fix${op}ifs.c
+      done
+    override-build: |
+      make dumpifs
+      mkdir -p $SNAPCRAFT_PART_INSTALL/bin
+      cp dumpifs $SNAPCRAFT_PART_INSTALL/bin
+    stage-packages:
+      - libucl1
+
+  lzfse:
+    plugin: make
+    source: https://github.com/lzfse/lzfse.git
+
+  dmg2img:
+    after: [lzfse]
+    plugin: make
+    source: https://github.com/Lekensteyn/dmg2img.git
+    make-parameters:
+      - HAVE_LZFSE=1
+
+  binwalk:
+    after: [python-deps]
+    plugin: rust
+    source: https://github.com/ReFirmLabs/binwalk.git
+    source-tag: v$SNAPCRAFT_PROJECT_VERSION
+    build-packages:
+      - 7zip
+      - zstd
+      - srecord
+      - tar
+      - unzip
+      - sleuthkit
+      - cabextract
+      - curl
+      - wget
+      - git
+      - lz4
+      - lzop
+      - unrar
+      - unyaffs
+      - python3-pip
+      - build-essential
+      - clang
+      - liblzo2-dev
+      - libucl-dev
+      - liblz4-dev
+      - libbz2-dev
+      - zlib1g-dev
+      - libfontconfig1-dev
+      - liblzma-dev
+      - libssl-dev
+      - 7zip-standalone
+      - cpio
+      - device-tree-compiler
+    stage-packages:
+      - 7zip
+      - libfontconfig1
+    override-prime: |
+      craftctl default
+      # fixup path in 7zip tools
+      sed -i 's|exec /usr|exec $SNAP/usr|' $CRAFT_PRIME/usr/bin/7z*
+

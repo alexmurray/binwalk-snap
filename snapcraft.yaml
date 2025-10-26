@@ -12,11 +12,11 @@ description: |
 license: MIT
 grade: stable
 confinement: strict
-architectures:
+platforms:
   # we are limited by what sasquatch provides
-  - amd64
-  - arm64
-  - armhf
+  amd64:
+  arm64:
+  armhf:
 
 apps:
   binwalk:

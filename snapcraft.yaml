@@ -69,6 +69,14 @@ parts:
     make-parameters:
       - HAVE_LZFSE=1
 
+  srec2bin:
+    plugin: make
+    source: https://www.goffart.co.uk/s-record/download/srec_151_src.zip
+    override-build: |
+      make
+      mkdir -p $SNAPCRAFT_PART_INSTALL/bin
+      cp srec2bin $SNAPCRAFT_PART_INSTALL/bin
+
   binwalk:
     after: [sasquatch, python-deps, dmg2img, dumpifs]
     plugin: rust

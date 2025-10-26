@@ -75,37 +75,37 @@ parts:
     source: https://github.com/ReFirmLabs/binwalk.git
     source-tag: v$SNAPCRAFT_PROJECT_VERSION
     build-packages:
-      - 7zip
-      - zstd
-      - srecord
-      - tar
-      - unzip
-      - sleuthkit
-      - cabextract
-      - curl
-      - wget
-      - git
-      - lz4
-      - lzop
-      - unrar
-      - unyaffs
-      - python3-pip
       - build-essential
       - clang
-      - liblzo2-dev
-      - libucl-dev
-      - liblz4-dev
+      - curl
+      - git
       - libbz2-dev
-      - zlib1g-dev
       - libfontconfig1-dev
+      - liblz4-dev
       - liblzma-dev
+      - liblzo2-dev
       - libssl-dev
-      - 7zip-standalone
-      - cpio
-      - device-tree-compiler
+      - libucl-dev
+      - python3-pip
+      - wget
+      - zlib1g-dev
     stage-packages:
       - 7zip
+      - 7zip-rar
+      - 7zip-standalone
+      - cabextract
+      - cpio
+      - device-tree-compiler
       - libfontconfig1
+      - lz4
+      - lzop
+      - sleuthkit
+      - srecord
+      - tar
+      - unrar
+      - unyaffs
+      - unzip
+      - zstd
     override-prime: |
       craftctl default
       # fixup path in 7zip tools

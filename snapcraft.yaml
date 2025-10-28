@@ -1,6 +1,11 @@
 name: binwalk
 title: binwalk
+source-code:
+  - https://github.com/alexmurray/binwalk-snap
+  - https://github.com/ReFirmLabs/binwalk
 contact:
+  - https://github.com/alexmurray/binwalk-snap/issues
+issues:
   - https://github.com/alexmurray/binwalk-snap/issues
 base: core24
 version: 3.1.0
